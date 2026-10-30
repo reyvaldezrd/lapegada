@@ -3,23 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>La Pegada — Muy pronto</title>
-<meta name="description" content="La Pegada: la plataforma de jugadas de lotería con método. Muy pronto.">
+<title>La Pegada — Membresía | La jugada del día</title>
+<meta name="description" content="La Pegada: la jugada del día de las loterías de República Dominicana, Nueva York y Florida. Membresía con todos los renglones, quinielas, palés y tripletas completos, por la página y por WhatsApp.">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#081426; color:#f5f0e1; font-family: Georgia, 'Times New Roman', serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px 20px; }
-  img.logo { width:min(560px, 88vw); height:auto; }
-  .pronto { margin-top:28px; font-family: Arial, Helvetica, sans-serif; letter-spacing:6px; font-size:clamp(15px,3.4vw,22px); color:#d4af37; text-transform:uppercase; }
-  .frase { margin-top:14px; font-size:clamp(17px,4vw,24px); font-style:italic; color:#e8e2cf; max-width:640px; line-height:1.45; }
-  .linea { width:120px; height:2px; background:linear-gradient(90deg, transparent, #d4af37, transparent); margin:26px auto 0; }
-  footer { margin-top:40px; font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#8fa3bf; letter-spacing:2px; }
+  body { background:#081426; color:#f5f0e1; font-family: Arial, Helvetica, sans-serif; line-height:1.55; }
+  .wrap { max-width:860px; margin:0 auto; padding:28px 20px 48px; }
+  header { text-align:center; padding-top:10px; }
+  img.logo { width:min(430px, 84vw); height:auto; }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-size:clamp(30px,6vw,44px); color:#d4af37; margin-top:14px; letter-spacing:1px; }
+  .tagline { margin-top:10px; font-size:clamp(16px,3.6vw,21px); color:#e8e2cf; font-style:italic; font-family: Georgia, 'Times New Roman', serif; }
+  .linea { width:130px; height:2px; background:linear-gradient(90deg, transparent, #d4af37, transparent); margin:24px auto; }
+  .gratis { background:#0d2140; border:1px solid #d4af37; border-radius:12px; padding:14px 18px; text-align:center; font-size:17px; color:#f5f0e1; }
+  .gratis strong { color:#d4af37; }
+  section { margin-top:38px; }
+  h2 { font-family: Georgia, 'Times New Roman', serif; color:#d4af37; font-size:clamp(22px,5vw,30px); text-align:center; margin-bottom:18px; }
+  ul.incluye { list-style:none; max-width:640px; margin:0 auto; }
+  ul.incluye li { padding:10px 14px 10px 42px; position:relative; background:#0b1c33; border-radius:10px; margin-bottom:10px; font-size:16.5px; }
+  ul.incluye li::before { content:"✦"; color:#d4af37; position:absolute; left:15px; top:10px; }
+  .planes { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; }
+  .plan { background:#0b1c33; border:1px solid #274a73; border-radius:14px; padding:20px 18px; text-align:center; }
+  .plan.destacado { border:2px solid #d4af37; background:#10253f; }
+  .plan .nombre { font-family: Georgia, 'Times New Roman', serif; font-size:20px; color:#f5f0e1; }
+  .plan .precio { font-size:32px; font-weight:bold; color:#d4af37; margin:8px 0 2px; }
+  .plan .precio small { font-size:15px; color:#cbbd8a; }
+  .plan .detalle { font-size:14.5px; color:#c9d4e6; margin-top:6px; }
+  .etiqueta { display:inline-block; background:#d4af37; color:#081426; font-weight:bold; font-size:12.5px; letter-spacing:1px; text-transform:uppercase; border-radius:20px; padding:3px 12px; margin-bottom:10px; }
+  .nota { text-align:center; font-size:15px; color:#c9d4e6; margin-top:16px; }
+  .pasos { max-width:680px; margin:0 auto; }
+  .paso { background:#0b1c33; border-radius:12px; padding:18px 20px; margin-bottom:14px; }
+  .paso h3 { color:#d4af37; font-family: Georgia, 'Times New Roman', serif; font-size:19px; margin-bottom:8px; }
+  .cuentas { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:12px; }
+  .cuenta { background:#081426; border:1px solid #d4af37; border-radius:10px; padding:14px 16px; }
+  .cuenta .banco { font-weight:bold; font-size:16.5px; color:#f5f0e1; }
+  .cuenta .numero { font-size:23px; font-weight:bold; letter-spacing:1px; color:#d4af37; margin:6px 0; }
+  .cuenta .dato { font-size:14.5px; color:#c9d4e6; }
+  a.wa { display:inline-block; background:#1faa55; color:#ffffff; font-weight:bold; text-decoration:none; border-radius:30px; padding:12px 26px; font-size:17px; margin-top:8px; }
+  .cta { text-align:center; margin-top:8px; }
+  footer { margin-top:44px; text-align:center; font-size:13.5px; color:#8fa3bf; }
+  footer .legal { max-width:640px; margin:0 auto 14px; line-height:1.5; }
 </style>
 </head>
 <body>
-  <img class="logo" src="logo-rueda.webp" alt="La Pegada">
-  <div class="pronto">✦ Muy pronto ✦</div>
-  <p class="frase">La plataforma de las jugadas que pegan.<br>Estamos calentando los números…</p>
-  <div class="linea"></div>
-  <footer>lapegada.com</footer>
+<div class="wrap">
+
+  <header>
+    <img class="logo" src="logo-rueda.webp" alt="La Pegada">
+    <h1>La Pegada</h1>
+    <p class="tagline">«La jugada del día» de las loterías de República Dominicana, Nueva York y Florida.</p>
+    <div class="linea"></div>
+    <div class="gratis">🎯 La <strong>jugada del día</strong> sigue <strong>pública y gratis</strong> para todo el mundo. La membresía es para quien quiere el contenido <strong>completo</strong>.</div>
+  </header>
+
+  <section>
+    <h2>¿Qué incluye la membresía?</h2>
+    <ul class="incluye">
+      <li><strong>Todos los renglones completos:</strong> Gana Más + Nacional, Leidsa + Real, Nueva York Tarde y Noche, Florida Tarde y Noche, y Loteka.</li>
+      <li><strong>Quinielas, palés y tripletas completos</strong>, cada uno con su dato histórico.</li>
+      <li><strong>Acceso a la página de jugadas</strong> con la jugada de hoy y la jugada de 3 días.</li>
+      <li><strong>Cada jugada por WhatsApp</strong> tras cada sorteo, en texto y nota de voz.</li>
+      <li><strong>Avisos de aciertos al momento</strong>, en cuanto una jugada pega.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Planes y precios</h2>
+    <div class="planes">
+      <div class="plan destacado">
+        <span class="etiqueta">Lanzamiento</span>
+        <div class="nombre">Fundador</div>
+        <div class="precio">RD$300 <small>primer mes</small></div>
+        <div class="detalle">Precio especial de lanzamiento para los primeros miembros. Después, RD$500/mes.</div>
+      </div>
+      <div class="plan">
+        <div class="nombre">Mensual</div>
+        <div class="precio">RD$500 <small>/mes</small></div>
+        <div class="detalle">La membresía completa, mes a mes.</div>
+      </div>
+      <div class="plan">
+        <div class="nombre">Semanal</div>
+        <div class="precio">RD$200 <small>/semana</small></div>
+        <div class="detalle">Para probar el sistema una semana completa.</div>
+      </div>
+      <div class="plan">
+        <div class="nombre">Anual Fundador</div>
+        <div class="precio">RD$4,000 <small>/año</small></div>
+        <div class="detalle">Un solo pago al año, con tu precio de fundador congelado.</div>
+      </div>
+      <div class="plan">
+        <div class="nombre">Diáspora Mensual</div>
+        <div class="precio">US$10 <small>/mes</small></div>
+        <div class="detalle">Para la diáspora dominicana fuera del país.</div>
+      </div>
+      <div class="plan">
+        <div class="nombre">Diáspora Anual</div>
+        <div class="precio">US$79 <small>/año</small></div>
+        <div class="detalle">El año completo, con precio de fundador congelado.</div>
+      </div>
+    </div>
+    <p class="nota">Los planes en US$ (diáspora) se pagan por depósito con el equivalente en pesos, o próximamente con tarjeta.</p>
+  </section>
+
+  <section>
+    <h2>Cómo pagar por depósito</h2>
+    <div class="pasos">
+      <div class="paso">
+        <h3>Paso 1 — Deposita el monto de tu plan</h3>
+        <p>Deposita o transfiere el monto del plan que elegiste a una de estas dos cuentas:</p>
+        <div class="cuentas">
+          <div class="cuenta">
+            <div class="banco">Banco Popular Dominicano</div>
+            <div class="numero">834204703</div>
+            <div class="dato">Cuenta corriente</div>
+            <div class="dato">Titular: Nelson Gabriel Collado Taveras</div>
+          </div>
+          <div class="cuenta">
+            <div class="banco">Banco de Reservas (BanReservas)</div>
+            <div class="numero">1800359214</div>
+            <div class="dato">Titular: Nelson Gabriel Collado Taveras</div>
+          </div>
+        </div>
+      </div>
+      <div class="paso">
+        <h3>Paso 2 — Envía tu comprobante</h3>
+        <p>Envía el <strong>screenshot o foto del comprobante</strong> por WhatsApp al <strong>(973) 938-2929</strong>, indicando tu nombre y el plan que elegiste.</p>
+        <div class="cta"><a class="wa" href="https://wa.me/19739382929">Enviar comprobante por WhatsApp</a></div>
+      </div>
+      <div class="paso">
+        <h3>Paso 3 — Activamos tu membresía</h3>
+        <p>Al confirmar tu depósito, te activamos la membresía y empiezas a recibir las jugadas completas tras cada sorteo.</p>
+      </div>
+    </div>
+    <p class="nota">Por ahora el pago es por depósito bancario. El pago con tarjeta llega pronto.</p>
+  </section>
+
+  <footer>
+    <p class="legal">La Pegada es un servicio de jugadas elaborado con su dato histórico. Ninguna jugada garantiza premios: la lotería es un juego de azar. Juega con responsabilidad.</p>
+    <p>lapegada.com</p>
+  </footer>
+
+</div>
 </body>
 </html>
