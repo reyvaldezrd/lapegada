@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La Pegada — Membresía | La jugada del día</title>
 <meta name="description" content="La Pegada: la jugada del día de las loterías de República Dominicana, Nueva York y Florida. Membresía con todos los renglones, quinielas, palés y tripletas completos, por la página y por WhatsApp.">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#081426">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="La Pegada">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:#081426; color:#f5f0e1; font-family: Arial, Helvetica, sans-serif; line-height:1.55; }
@@ -143,5 +152,12 @@
   </footer>
 
 </div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () { /* sin SW la página funciona igual */ });
+  });
+}
+</script>
 </body>
 </html>
