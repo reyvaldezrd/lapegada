@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel Admin — La Pegada</title>
+<link rel="stylesheet" href="cuenta.css">
+</head>
+<body>
+<div class="wrap" style="max-width:900px">
+  <h1>🛠️ Panel Admin — La Pegada</h1>
+  <div class="linea"></div>
+
+  <div class="card" id="card-login">
+    <label for="adminkey">Clave de admin</label>
+    <input id="adminkey" type="password" placeholder="ADMIN_KEY">
+    <button id="btn-login" class="btn-block">Entrar al panel</button>
+    <div class="error" id="error-login"></div>
+  </div>
+
+  <div id="panel" style="display:none">
+    <h2>📥 Vouchers pendientes</h2>
+    <div id="vouchers"><p class="mini">Cargando…</p></div>
+
+    <h2>👥 Miembros</h2>
+    <input id="buscar" type="text" placeholder="Buscar por nombre, WhatsApp o correo…">
+    <div id="miembros" style="margin-top:12px"></div>
+
+    <h2>🔒 Publicar Jugada Secreta</h2>
+    <div class="card">
+      <label for="j-renglon">Renglón</label>
+      <select id="j-renglon"></select>
+      <label for="j-numeros">Números (separados por coma)</label>
+      <input id="j-numeros" type="text" placeholder="Ej. 14, 41, 87, 80, 74">
+      <label for="j-ventana">Ventana (opcional)</label>
+      <input id="j-ventana" type="text" placeholder="Ej. 3-nov → 5-nov">
+      <label for="j-dia">Día de la ventana (opcional)</label>
+      <input id="j-dia" type="text" placeholder="Ej. Día 1 de 3">
+      <button id="btn-jugada" class="btn-block dorado">Publicar jugada</button>
+      <div class="ok" id="ok-jugada">✅ Jugada publicada.</div>
+      <div class="error" id="error-jugada"></div>
+    </div>
+
+    <p class="centro"><button class="gris" id="btn-salir">Salir del panel</button></p>
+  </div>
+</div>
+
+<script src="cuenta.js"></script>
+<script>
+const key = () => sessionStorage.getItem('lp_admin_key') || '';
+const PLANES_PROMISE = api('/auth/planes').then(d => d.planes);
+let PLANES = {};
+
+function adminApi(path, opts = {}) {
+  return fetch(API_BASE + path, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': key(), ...(opts.headers || {}) },
+  }).then(async r => {
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || ('Error ' + r.status));
+    return d;
+  });
+}
+
+async function cargarVouchers() {
+  const cont = document.getElementById('vouchers');
+  const { vouchers } = await adminApi('/admin/vouchers?estado=pendiente');
+  if (!vouchers.length) { cont.innerHTML = '<p class="mini">No hay vouchers pendientes. 👌</p>'; return; }
+  cont.innerHTML = '';
+  for (const v of vouchers) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<p style="margin:2px 0"><strong>${v.miembro ? v.miembro.nombre : v.userId}</strong> · ${v.miembro ? v.miembro.whatsapp : ''}</p>
+      <p class="mini" style="margin:2px 0">Plan: <strong>${(PLANES[v.plan] || {}).nombre || v.plan}</strong> · ${fechaCorta(v.fecha)}</p>
+      <img class="voucher" alt="Voucher">
+      <div style="margin-top:10px;display:flex;gap:10px">
+        <button data-a="aprobar">✅ Aprobar</button>
+        <button class="gris" data-a="rechazar">❌ Rechazar</button>
+      </div>`;
+    const img = card.querySelector('img');
+    fetch(API_BASE + '/admin/vouchers/' + v.id + '/imagen', { headers: { 'x-admin-key': key() } })
+      .then(r => r.blob()).then(b => { img.src = URL.createObjectURL(b); }).catch(() => {});
+    card.querySelector('[data-a="aprobar"]').onclick = async (e) => { e.target.disabled = true; await adminApi('/admin/vouchers/' + v.id + '/aprobar', { method: 'POST' }); refrescar(); };
+    card.querySelector('[data-a="rechazar"]').onclick = async (e) => { e.target.disabled = true; await adminApi('/admin/vouchers/' + v.id + '/rechazar', { method: 'POST' }); refrescar(); };
+    cont.appendChild(card);
+  }
+}
+
+async function cargarMiembros() {
+  const q = document.getElementById('buscar').value || '';
+  const { miembros } = await adminApi('/admin/miembros?q=' + encodeURIComponent(q));
+  const cont = document.getElementById('miembros');
+  if (!miembros.length) { cont.innerHTML = '<p class="mini">Sin resultados.</p>'; return; }
+  const tabla = document.createElement('table');
+  tabla.innerHTML = '<tr><th>Miembro</th><th>Estado</th><th>Plan / vence</th><th>Acciones</th></tr>';
+  for (const m of miembros) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><strong>${m.nombre}</strong><br><span class="mini">${m.whatsapp} · ${m.correo}<br>Fav: ${RENGLON_NOMBRES[m.renglon] || m.renglon}</span></td>
+      <td><span class="estado ${m.estado}">${ESTADO_TEXTO[m.estado] || m.estado}</span>${m.vouchersPendientes ? `<br><span class="mini">📥 ${m.vouchersPendientes} voucher(s)</span>` : ''}</td>
+      <td>${m.planNombre || '—'}<br><span class="mini">${fechaCorta(m.vence)}</span></td>`;
+    const td = document.createElement('td');
+    const sel = document.createElement('select');
+    for (const [k, p] of Object.entries(PLANES)) { const o = document.createElement('option'); o.value = k; o.textContent = p.nombre; sel.appendChild(o); }
+    const bAct = document.createElement('button'); bAct.textContent = 'Activar'; bAct.className = 'dorado';
+    bAct.onclick = async () => { await adminApi('/admin/miembros/' + m.id + '/activar', { method: 'POST', body: JSON.stringify({ plan: sel.value }) }); refrescar(); };
+    const bExt = document.createElement('button'); bExt.textContent = '+7 días'; bExt.className = 'gris';
+    bExt.onclick = async () => { await adminApi('/admin/miembros/' + m.id + '/extender', { method: 'POST', body: JSON.stringify({ dias: 7 }) }); refrescar(); };
+    td.append(sel, bAct, bExt);
+    tr.appendChild(td);
+    tabla.appendChild(tr);
+  }
+  cont.innerHTML = '';
+  cont.appendChild(tabla);
+}
+
+async function refrescar() { await cargarVouchers(); await cargarMiembros(); }
+
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const err = document.getElementById('error-login'); err.style.display = 'none';
+  sessionStorage.setItem('lp_admin_key', document.getElementById('adminkey').value);
+  try {
+    await adminApi('/admin/login', { method: 'POST', body: '{}' });
+    PLANES = await PLANES_PROMISE;
+    document.getElementById('card-login').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    const sel = document.getElementById('j-renglon');
+    for (const [k, n] of Object.entries(RENGLON_NOMBRES)) { const o = document.createElement('option'); o.value = k; o.textContent = n; sel.appendChild(o); }
+    refrescar();
+  } catch (e) { mostrarError(err, e); sessionStorage.removeItem('lp_admin_key'); }
+});
+
+document.getElementById('buscar').addEventListener('input', () => cargarMiembros());
+document.getElementById('btn-salir').addEventListener('click', () => { sessionStorage.removeItem('lp_admin_key'); location.reload(); });
+document.getElementById('btn-jugada').addEventListener('click', async () => {
+  const ok = document.getElementById('ok-jugada'); const err = document.getElementById('error-jugada');
+  ok.style.display = 'none'; err.style.display = 'none';
+  try {
+    await adminApi('/admin/jugada', {
+      method: 'POST',
+      body: JSON.stringify({
+        renglon: document.getElementById('j-renglon').value,
+        numeros: document.getElementById('j-numeros').value.split(',').map(s => s.trim()).filter(Boolean),
+        ventana: document.getElementById('j-ventana').value || null,
+        dia: document.getElementById('j-dia').value || null,
+      }),
+    });
+    ok.style.display = 'block';
+  } catch (e) { mostrarError(err, e); }
+});
+</script>
+</body>
+</html>
