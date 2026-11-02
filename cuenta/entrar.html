@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar — La Pegada</title>
+<link rel="stylesheet" href="cuenta.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>🎯 La Pegada</h1>
+  <p class="tagline">Entra a tu cuenta de miembro.</p>
+  <div class="linea"></div>
+
+  <div class="card">
+    <form id="form-login">
+      <label for="identificador">Correo o WhatsApp</label>
+      <input id="identificador" type="text" required autocomplete="username" placeholder="tu@correo.com o 809-555-0123">
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" required autocomplete="current-password" placeholder="Tu contraseña">
+      <button type="submit" class="btn-block">Entrar</button>
+      <div class="error" id="error"></div>
+    </form>
+    <p class="centro mini">¿No tienes perfil? <a href="registro.html">Créalo aquí</a></p>
+  </div>
+</div>
+<script src="cuenta.js"></script>
+<script>
+document.getElementById('form-login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const err = document.getElementById('error'); err.style.display = 'none';
+  try {
+    const data = await api('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        identificador: document.getElementById('identificador').value,
+        password: document.getElementById('password').value,
+      }),
+    });
+    guardarToken(data.token);
+    location.href = 'miembros.html';
+  } catch (e2) { mostrarError(err, e2); }
+});
+</script>
+</body>
+</html>
