@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi cuenta — La Pegada</title>
+<link rel="stylesheet" href="cuenta.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>🎯 La Pegada</h1>
+  <p class="tagline" id="saludo">Tu cuenta de miembro</p>
+  <div class="linea"></div>
+
+  <div class="error" id="error"></div>
+
+  <!-- Estado de la membresía -->
+  <div class="card" id="card-estado" style="display:none">
+    <p class="centro" style="margin:4px 0"><span class="estado" id="estado"></span></p>
+    <p class="centro" id="detalle-estado" style="margin:8px 0 0"></p>
+    <p class="centro mini" id="detalle-favorita"></p>
+  </div>
+
+  <!-- Jugada Secreta: TODOS los renglones (solo miembros activos) -->
+  <div id="bloque-jugadas" style="display:none">
+    <h2>🔒 Jugada Secreta — todos los renglones</h2>
+    <div id="lista-jugadas"></div>
+    <p class="centro mini">Tu membresía incluye las jugadas de todos los renglones. Juega con responsabilidad: la lotería es un juego de azar y ninguna jugada garantiza premios.</p>
+  </div>
+
+  <!-- Pago / renovación -->
+  <div id="bloque-pago" style="display:none">
+    <h2 id="titulo-pago">Activa tu membresía</h2>
+    <div class="card">
+      <h3 style="color:#d4af37;margin-top:0">💳 Con tarjeta (activación automática)</h3>
+      <div id="planes-tarjeta"></div>
+      <p class="mini">Al pagar, tu perfil se activa solo en cuanto Stripe confirma el pago.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:#d4af37;margin-top:0">🏦 Por depósito bancario</h3>
+      <p id="cuentas" class="mini" style="white-space:pre-line;color:#eef3fb">Cargando cuentas…</p>
+      <label for="plan-deposito">Plan que depositaste</label>
+      <select id="plan-deposito"></select>
+      <label for="voucher">Foto del voucher (JPG, PNG o WEBP, máx. 5 MB)</label>
+      <input id="voucher" type="file" accept="image/jpeg,image/png,image/webp">
+      <button id="btn-deposito" class="btn-block">📤 Enviar voucher</button>
+      <div class="ok" id="ok-deposito">✅ Voucher enviado. Tu perfil se activa en cuanto se apruebe tu depósito.</div>
+      <div class="error" id="error-deposito"></div>
+    </div>
+  </div>
+
+  <p class="centro"><button class="gris" onclick="cerrarSesion()">Cerrar sesión</button></p>
+</div>
+
+<script src="cuenta.js"></script>
+<script>
+let PLANES = {};
+const err = document.getElementById('error');
+
+function planRow(key, plan, modo) {
+  const div = document.createElement('div');
+  div.className = 'plan';
+  div.innerHTML = `<span><strong>${plan.nombre}</strong> · ${plan.dias} días ${plan.unaVez ? '· una sola vez' : ''}</span><span class="precio">${precioTexto(plan)}</span>`;
+  const b = document.createElement('button');
+  if (modo === 'tarjeta') { b.textContent = 'Pagar'; b.onclick = () => pagarTarjeta(key, b); }
+  div.appendChild(b);
+  return div;
+}
+
+async function pagarTarjeta(plan, btn) {
+  btn.disabled = true; err.style.display = 'none';
+  try {
+    const d = await api('/pagos/tarjeta-link?plan=' + encodeURIComponent(plan));
+    location.href = d.url;
+  } catch (e) { mostrarError(err, e); btn.disabled = false; }
+}
+
+async function cargar() {
+  if (!token()) { location.href = 'entrar.html'; return; }
+  let me;
+  try { me = (await api('/auth/me')).miembro; }
+  catch (e) { cerrarSesion(); return; }
+  PLANES = (await api('/auth/planes')).planes;
+
+  document.getElementById('saludo').textContent = 'Hola, ' + me.nombre + ' 👋';
+  const card = document.getElementById('card-estado');
+  card.style.display = 'block';
+  const est = document.getElementById('estado');
+  est.textContent = ESTADO_TEXTO[me.estado] || me.estado;
+  est.className = 'estado ' + me.estado;
+  document.getElementById('detalle-estado').innerHTML = me.plan
+    ? `Plan <strong>${me.planNombre}</strong> · vence el <strong>${fechaCorta(me.vence)}</strong>${me.diasRestantes != null && me.estado === 'activo' ? ` (te quedan ${me.diasRestantes} días)` : ''}`
+    : 'Todavía no tienes un plan activo.';
+  document.getElementById('detalle-favorita').textContent =
+    'Tu lotería favorita: ' + (RENGLON_NOMBRES[me.renglon] || me.renglon) + ' (tu membresía incluye TODOS los renglones)';
+
+  if (me.estado === 'activo') {
+    const d = await api('/mi-jugada');
+    const lista = document.getElementById('lista-jugadas');
+    lista.innerHTML = '';
+    let alguna = false;
+    for (const [key, nombre] of Object.entries(RENGLON_NOMBRES)) {
+      const j = (d.jugadas || {})[key];
+      const card2 = document.createElement('div');
+      card2.className = 'card verde';
+      if (j) {
+        alguna = true;
+        card2.innerHTML = `<h3 style="color:#d4af37;margin:0 0 4px">${nombre}</h3>
+          ${j.ventana ? `<p class="mini" style="margin:2px 0">Ventana: ${j.ventana}${j.dia ? ' · ' + j.dia : ''}</p>` : ''}
+          <div class="numeros">${j.numeros.map(n => `<span>${n}</span>`).join('')}</div>
+          ${j.nota ? `<p class="mini">${j.nota}</p>` : ''}`;
+      } else {
+        card2.innerHTML = `<h3 style="color:#d4af37;margin:0 0 4px">${nombre}</h3><p class="mini">La jugada de este renglón se publica después de cada sorteo.</p>`;
+      }
+      lista.appendChild(card2);
+    }
+    document.getElementById('bloque-jugadas').style.display = 'block';
+    document.getElementById('titulo-pago').textContent = 'Renueva o extiende tu membresía';
+  } else {
+    if (me.estado === 'pendiente_voucher') {
+      document.getElementById('detalle-estado').innerHTML += '<br>Tu voucher está en revisión — en cuanto se apruebe, se activa tu perfil.';
+    }
+    if (me.estado === 'vencido') {
+      document.getElementById('titulo-pago').textContent = 'Tu membresía venció — renuévala aquí';
+    }
+  }
+
+  // Sección de pago (siempre visible: activar, renovar o extender)
+  const cont = document.getElementById('planes-tarjeta');
+  cont.innerHTML = '';
+  const selDep = document.getElementById('plan-deposito');
+  selDep.innerHTML = '';
+  for (const [key, plan] of Object.entries(PLANES)) {
+    if (plan.unaVez && me.fundadorUsado && me.estado !== 'activo') { /* fundador ya usado: no ofrecer */ }
+    else cont.appendChild(planRow(key, plan, 'tarjeta'));
+    const o = document.createElement('option'); o.value = key; o.textContent = `${plan.nombre} — ${precioTexto(plan)}`;
+    selDep.appendChild(o);
+  }
+  document.getElementById('bloque-pago').style.display = 'block';
+
+  try {
+    const c = await api('/pagos/cuentas');
+    document.getElementById('cuentas').textContent = c.cuentas || c.nota;
+  } catch (e) { document.getElementById('cuentas').textContent = 'No se pudieron cargar las cuentas.'; }
+}
+
+document.getElementById('btn-deposito').addEventListener('click', async () => {
+  const okD = document.getElementById('ok-deposito'); const errD = document.getElementById('error-deposito');
+  okD.style.display = 'none'; errD.style.display = 'none';
+  const file = document.getElementById('voucher').files[0];
+  if (!file) { mostrarError(errD, new Error('Elige la foto del voucher.')); return; }
+  if (file.size > 5 * 1024 * 1024) { mostrarError(errD, new Error('La foto pasa de 5 MB.')); return; }
+  const b64 = await new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+  try {
+    await api('/pagos/deposito', {
+      method: 'POST',
+      body: JSON.stringify({ plan: document.getElementById('plan-deposito').value, voucherBase64: b64 }),
+    });
+    okD.style.display = 'block';
+    setTimeout(() => location.reload(), 1500);
+  } catch (e) { mostrarError(errD, e); }
+});
+
+cargar();
+</script>
+</body>
+</html>
