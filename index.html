@@ -61,6 +61,12 @@
   a.grupo { display:inline-block; background:transparent; color:#8fa3bf; font-weight:bold; text-decoration:none; border:2px solid #3a4a63; border-radius:30px; padding:9px 22px; font-size:15px; margin-top:10px; }
   .cta { text-align:center; margin-top:8px; }
   .cta .nota { display:block; margin-top:6px; font-size:13px; color:#8fa3bf; }
+  form.perfil { max-width:520px; margin:14px auto 0; text-align:left; }
+  form.perfil label { display:block; font-size:14px; color:#c7d3e8; margin:12px 0 5px; }
+  form.perfil input, form.perfil select { width:100%; box-sizing:border-box; background:#16213a; border:1px solid #3a4a63; border-radius:10px; color:#ffffff; padding:11px 13px; font-size:16px; }
+  form.perfil button { display:block; width:100%; background:#1faa55; color:#ffffff; font-weight:bold; border:none; border-radius:30px; padding:14px; font-size:18px; margin-top:18px; cursor:pointer; }
+  #perfil-ok { display:none; background:#12351f; border:1px solid #1faa55; color:#b9f4cd; border-radius:12px; padding:14px 16px; margin-top:16px; text-align:center; }
+  #perfil-error { display:none; background:#3a1626; border:1px solid #a83a5c; color:#f4c7d4; border-radius:12px; padding:14px 16px; margin-top:16px; text-align:center; }
   footer { margin-top:44px; text-align:center; font-size:13.5px; color:#8fa3bf; }
   footer .legal { max-width:640px; margin:0 auto 14px; line-height:1.5; }
 </style>
@@ -74,7 +80,7 @@
     <p class="tagline">«La jugada del día» de las loterías de República Dominicana, Nueva York y Florida.</p>
     <div class="linea"></div>
     <div class="gratis">🎯 La <strong>jugada del día</strong> sigue <strong>pública y gratis</strong> para todo el mundo. La membresía es para quien quiere el contenido <strong>completo</strong>.</div>
-    <div class="cta"><a class="wa" href="https://wa.me/19739382929?text=Hola%2C%20quiero%20crear%20mi%20perfil%20en%20La%20Pegada">🟢 Crea tu perfil en La Pegada</a><span class="nota">Te abre un chat directo con nosotros — no es el grupo.</span></div>
+    <div class="cta"><a class="wa" href="#crear-perfil">🟢 Crea tu perfil en La Pegada</a><span class="nota">Llena el formulario y te activamos tu perfil.</span></div>
     <div class="cta"><a class="grupo" href="https://chat.whatsapp.com/J2mZle35gY3IlnTpNq9Ofj?s=cl&p=i&mlu=4&ilr=4&iam=2">📲 Solo quiero entrar al grupo de WhatsApp</a></div>
   </header>
 
@@ -127,6 +133,41 @@
     <p class="nota">Los planes en US$ (diáspora) se pagan por depósito con el equivalente en pesos, o próximamente con tarjeta.</p>
   </section>
 
+  <section id="crear-perfil">
+    <h2>🟢 Crea tu perfil en La Pegada</h2>
+    <p>Llena este formulario y te activamos tu perfil. Después de enviarlo, te contactamos por WhatsApp para confirmar tu activación y tu pago.</p>
+    <form class="perfil" id="form-perfil">
+      <label for="f-nombre">Nombre completo *</label>
+      <input id="f-nombre" name="Nombre" type="text" required autocomplete="name" placeholder="Tu nombre">
+      <label for="f-wa">Tu número de WhatsApp *</label>
+      <input id="f-wa" name="WhatsApp" type="tel" required autocomplete="tel" placeholder="Ej. 809-555-0123">
+      <label for="f-correo">Correo electrónico</label>
+      <input id="f-correo" name="Correo" type="email" autocomplete="email" placeholder="tu@correo.com">
+      <label for="f-loteria">Tu lotería favorita</label>
+      <select id="f-loteria" name="Loteria favorita">
+        <option>Gana Más + Nacional</option>
+        <option>Leidsa + Real</option>
+        <option>Nueva York Tarde y Noche</option>
+        <option>Florida Tarde y Noche</option>
+        <option>Loteka</option>
+        <option>Todas</option>
+      </select>
+      <label for="f-plan">Plan que quieres *</label>
+      <select id="f-plan" name="Plan" required>
+        <option>Semanal — RD$200</option>
+        <option selected>Mensual — RD$500</option>
+        <option>Anual — RD$4,000</option>
+        <option>Fundador (primer mes) — RD$300</option>
+        <option>Diáspora Mensual — US$8</option>
+        <option>Diáspora Anual — US$64</option>
+      </select>
+      <button type="submit">✅ Crear mi perfil</button>
+      <div id="perfil-ok">🎉 ¡Recibimos tu solicitud! Tu perfil está en proceso — te contactamos por WhatsApp para activarlo.</div>
+      <div id="perfil-error">Hubo un problema enviando el formulario. Inténtalo de nuevo en un momento.</div>
+    </form>
+    <p class="nota" style="text-align:center;margin-top:14px;">¿Prefieres hacerlo por WhatsApp? <a href="https://wa.me/19739382929?text=Hola%2C%20quiero%20crear%20mi%20perfil%20en%20La%20Pegada" style="color:#7ee2a3;">Escríbenos directo</a>.</p>
+  </section>
+
   <section>
     <h2>Cómo pagar por depósito</h2>
     <div class="pasos">
@@ -172,6 +213,28 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function () { /* sin SW la página funciona igual */ });
   });
 }
+(function () {
+  var form = document.getElementById('form-perfil');
+  if (!form) return;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ok = document.getElementById('perfil-ok');
+    var err = document.getElementById('perfil-error');
+    ok.style.display = 'none'; err.style.display = 'none';
+    var data = {};
+    new FormData(form).forEach(function (v, k) { data[k] = v; });
+    data._subject = 'Nuevo perfil — La Pegada';
+    data._template = 'table';
+    fetch('https://formsubmit.co/ajax/reyvaldezrd@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && (d.success === 'true' || d.success === true)) { ok.style.display = 'block'; form.reset(); }
+      else { err.style.display = 'block'; }
+    }).catch(function () { err.style.display = 'block'; });
+  });
+})();
 </script>
 </body>
 </html>
