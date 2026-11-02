@@ -2,7 +2,7 @@
    Estrategia: el HTML va NETWORK-FIRST (los precios nunca quedan
    atrapados en una caché vieja); los assets estáticos del shell
    (logo, iconos, manifest) van cache-first. */
-const CACHE = 'lapegada-shell-v2';
+const CACHE = 'lapegada-shell-v3';
 const SHELL = [
   '/',
   '/index.html',
