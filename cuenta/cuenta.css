@@ -1,0 +1,37 @@
+/* La Pegada — Cuenta: mismo look de lapegada.com (oscuro, dorado, verde WhatsApp) */
+* { box-sizing: border-box; }
+body { margin: 0; background: #081426; color: #eef3fb; font-family: Arial, Helvetica, sans-serif; }
+.wrap { max-width: 680px; margin: 0 auto; padding: 28px 18px 60px; }
+h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: #d4af37; text-align: center; }
+h1 { font-size: 30px; margin: 6px 0 2px; }
+h2 { font-size: 22px; margin: 26px 0 10px; }
+.tagline { text-align: center; color: #8fa3bf; margin: 0 0 8px; }
+.linea { height: 2px; background: linear-gradient(90deg, transparent, #d4af37, transparent); margin: 16px 0; }
+.card { background: #0d2140; border: 1px solid #25406b; border-radius: 14px; padding: 20px; margin: 16px 0; }
+.card.verde { background: #10253f; border-color: #1faa55; }
+label { display: block; font-size: 14px; color: #c7d3e8; margin: 12px 0 5px; }
+input, select { width: 100%; background: #16213a; border: 1px solid #3a4a63; border-radius: 10px; color: #fff; padding: 11px 13px; font-size: 16px; }
+button, .btn { display: inline-block; background: #1faa55; color: #fff; font-weight: bold; border: none; text-decoration: none; border-radius: 30px; padding: 12px 26px; font-size: 16px; cursor: pointer; text-align: center; }
+button.dorado, .btn.dorado { background: #d4af37; color: #081426; }
+button.gris, .btn.gris { background: transparent; border: 2px solid #3a4a63; color: #8fa3bf; }
+button:disabled { opacity: .55; cursor: wait; }
+.btn-block { display: block; width: 100%; margin-top: 16px; }
+.error { display: none; background: #3a1626; border: 1px solid #a83a5c; color: #f4c7d4; border-radius: 12px; padding: 12px 14px; margin-top: 14px; }
+.ok { display: none; background: #12351f; border: 1px solid #1faa55; color: #b9f4cd; border-radius: 12px; padding: 12px 14px; margin-top: 14px; }
+.estado { display: inline-block; border-radius: 20px; padding: 4px 14px; font-weight: bold; font-size: 14px; background: #16213a; border: 1px solid #3a4a63; }
+.estado.activo { background: #12351f; border-color: #1faa55; color: #b9f4cd; }
+.estado.vencido { background: #3a1626; border-color: #a83a5c; color: #f4c7d4; }
+.estado.pendiente_voucher { background: #3a2f10; border-color: #d4af37; color: #f4e3ae; }
+.numeros { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+.numeros span { background: #d4af37; color: #081426; font-weight: bold; font-size: 20px; border-radius: 50%; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; }
+.plan { display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid #25406b; border-radius: 12px; padding: 12px 14px; margin: 10px 0; background: #0b1c33; }
+.plan .precio { color: #d4af37; font-weight: bold; white-space: nowrap; }
+.plan button { padding: 9px 16px; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #25406b; }
+th { color: #d4af37; }
+.mini { font-size: 13px; color: #8fa3bf; }
+.centro { text-align: center; }
+a { color: #7ee2a3; }
+img.voucher { max-width: 100%; border-radius: 10px; border: 1px solid #3a4a63; }
+@media (max-width: 520px) { .plan { flex-direction: column; align-items: stretch; text-align: center; } }
