@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crea tu perfil — La Pegada</title>
+<link rel="stylesheet" href="cuenta.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>🎯 La Pegada</h1>
+  <p class="tagline">Crea tu perfil de miembro en un minuto.</p>
+  <div class="linea"></div>
+
+  <div class="card">
+    <form id="form-registro">
+      <label for="nombre">Nombre completo *</label>
+      <input id="nombre" type="text" required autocomplete="name" placeholder="Tu nombre">
+      <label for="whatsapp">Tu número de WhatsApp *</label>
+      <input id="whatsapp" type="tel" required autocomplete="tel" placeholder="Ej. 809-555-0123">
+      <label for="correo">Correo electrónico *</label>
+      <input id="correo" type="email" required autocomplete="email" placeholder="tu@correo.com">
+      <label for="password">Contraseña *</label>
+      <input id="password" type="password" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+      <label for="renglon">Tu lotería favorita *</label>
+      <select id="renglon" required></select>
+      <button type="submit" class="btn-block">✅ Crear mi perfil</button>
+      <div class="error" id="error"></div>
+    </form>
+    <p class="centro mini">¿Ya tienes perfil? <a href="entrar.html">Entra aquí</a></p>
+  </div>
+
+  <p class="centro mini">Al crear tu perfil eliges tu plan y pagas con tarjeta (activación automática) o por depósito bancario (subes tu voucher y se te aprueba).</p>
+</div>
+<script src="cuenta.js"></script>
+<script>
+const sel = document.getElementById('renglon');
+for (const [key, nombre] of Object.entries(RENGLON_NOMBRES)) {
+  const o = document.createElement('option'); o.value = key; o.textContent = nombre; sel.appendChild(o);
+}
+document.getElementById('form-registro').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const err = document.getElementById('error'); err.style.display = 'none';
+  try {
+    const data = await api('/auth/registro', {
+      method: 'POST',
+      body: JSON.stringify({
+        nombre: document.getElementById('nombre').value,
+        whatsapp: document.getElementById('whatsapp').value,
+        correo: document.getElementById('correo').value,
+        password: document.getElementById('password').value,
+        renglon: sel.value,
+      }),
+    });
+    guardarToken(data.token);
+    location.href = 'miembros.html';
+  } catch (e2) { mostrarError(err, e2); }
+});
+</script>
+</body>
+</html>
