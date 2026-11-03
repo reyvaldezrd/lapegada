@@ -92,7 +92,7 @@ async function cargar() {
     ? `Plan <strong>${me.planNombre}</strong> · vence el <strong>${fechaCorta(me.vence)}</strong>${me.diasRestantes != null && me.estado === 'activo' ? ` (te quedan ${me.diasRestantes} días)` : ''}`
     : 'Todavía no tienes un plan activo.';
   document.getElementById('detalle-favorita').textContent =
-    'Tu lotería favorita: ' + (RENGLON_NOMBRES[me.renglon] || me.renglon) + ' (tu membresía incluye TODOS los renglones)';
+    'Tu lotería favorita: ' + (FAVORITO_NOMBRES[me.renglon] || me.renglon) + ' (tu membresía incluye TODOS los renglones)';
 
   if (me.estado === 'activo') {
     const d = await api('/mi-jugada');
