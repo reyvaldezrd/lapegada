@@ -77,6 +77,7 @@
     <div class="gratis">🎯 La <strong>jugada del día</strong> sigue <strong>pública y gratis</strong> para todo el mundo. La membresía es para quien quiere el contenido <strong>completo</strong>.</div>
     <div class="cta"><a class="wa" href="/cuenta/registro.html">🟢 Crea tu perfil en La Pegada</a><span class="nota">Regístrate, elige tu plan y paga en línea: tu perfil se activa automáticamente.</span></div>
     <div class="cta"><a class="entrar" href="/cuenta/entrar.html">🔑 Ya tengo cuenta — Iniciar sesión</a></div>
+    <div class="cta"><a class="grupo" href="#" id="btnInstalar">📱 Instala la app en tu celular</a><span class="nota" id="instalarNota" style="display:none"></span></div>
     <div class="cta"><a class="grupo" href="https://chat.whatsapp.com/J2mZle35gY3IlnTpNq9Ofj?s=cl&p=i&mlu=4&ilr=4&iam=2">📲 Solo quiero entrar al grupo de WhatsApp</a></div>
   </header>
 
@@ -181,6 +182,27 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function () { /* sin SW la página funciona igual */ });
   });
 }
+// Botón "Instala la app": usa el prompt nativo de Android/Chrome cuando el
+// navegador lo ofrece; si no, muestra los pasos según el teléfono.
+var promptInstalar = null;
+window.addEventListener('beforeinstallprompt', function (e) {
+  e.preventDefault();
+  promptInstalar = e;
+});
+document.getElementById('btnInstalar').addEventListener('click', function (ev) {
+  ev.preventDefault();
+  if (promptInstalar) {
+    promptInstalar.prompt();
+    promptInstalar = null;
+    return;
+  }
+  var nota = document.getElementById('instalarNota');
+  var esIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  nota.textContent = esIOS
+    ? 'En iPhone: toca el botón Compartir (el cuadrito con la flecha hacia arriba) y luego «Agregar a inicio».'
+    : 'En Android: toca el menú ⋮ de arriba a la derecha y luego «Instalar app» (o «Agregar a pantalla principal»). Si no sale, ya la tienes instalada.';
+  nota.style.display = 'block';
+});
 </script>
 </body>
 </html>
