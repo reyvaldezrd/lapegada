@@ -2,7 +2,7 @@
    Estrategia: el HTML va NETWORK-FIRST (los precios nunca quedan
    atrapados en una caché vieja); los assets estáticos del shell
    (logo, iconos, manifest) van cache-first. */
-const CACHE = 'lapegada-shell-v4';
+const CACHE = 'lapegada-shell-v5';
 const SHELL = [
   '/',
   '/index.html',
@@ -37,6 +37,22 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   const isHTML = req.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('.html');
+  const isJSON = url.pathname.endsWith('.json');
+  if (isJSON) {
+    // Datos que cambian a diario (diaria.json): NETWORK-FIRST siempre,
+    // la caché solo sirve de respaldo sin conexión. NUNCA cache-first:
+    // un visitante vería la jugada de ayer.
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
   if (isHTML) {
     // Network-first: contenido de ventas siempre fresco; caché solo de respaldo sin conexión
     event.respondWith(
