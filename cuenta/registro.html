@@ -35,7 +35,7 @@
 <script src="cuenta.js"></script>
 <script>
 const sel = document.getElementById('renglon');
-for (const [key, nombre] of Object.entries(RENGLON_NOMBRES)) {
+for (const [key, nombre] of Object.entries(FAVORITO_NOMBRES)) {
   const o = document.createElement('option'); o.value = key; o.textContent = nombre; sel.appendChild(o);
 }
 document.getElementById('form-registro').addEventListener('submit', async (e) => {
