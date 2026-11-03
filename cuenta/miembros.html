@@ -116,7 +116,8 @@ async function cargar() {
         card2.innerHTML = `<h3 style="color:#d4af37;margin:0 0 4px">${nombre}</h3>
           ${j.ventana ? `<p class="mini" style="margin:2px 0">Ventana: ${j.ventana}${j.dia ? ' · ' + j.dia : ''}</p>` : ''}
           <h3 style="color:#d4af37;margin:8px 0 4px">🔒 Jugada Secreta</h3>
-          <div class="numeros">${j.numeros.map(n => `<span>${n}</span>`).join('')}</div>
+          <div class="numeros">${j.numeros.map((n, i) => `<span>${n}${key === 'gana_mas_nacional' && i < 3 ? '🔥' : ''}</span>`).join('')}</div>
+          ${key === 'gana_mas_nacional' ? '<p class="mini">🔥 = los 3 números de la Pirámide: están calientes.</p>' : ''}
           ${j.nota ? `<p class="mini">${j.nota}</p>` : ''}` + diariaHTML;
       } else {
         card2.innerHTML = `<h3 style="color:#d4af37;margin:0 0 4px">${nombre}</h3><p class="mini">La jugada de este renglón se publica después de cada sorteo.</p>` + diariaHTML;
