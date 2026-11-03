@@ -79,7 +79,7 @@ async function pagarTarjeta(plan, btn) {
 async function cargar() {
   if (!token()) { location.href = 'entrar.html'; return; }
   let me;
-  try { me = (await api('/auth/me')).miembro; }
+  try { const r = await api('/auth/me'); me = r.miembro; if (r.token) guardarToken(r.token); }
   catch (e) { cerrarSesion(); return; }
   PLANES = (await api('/auth/planes')).planes;
 
