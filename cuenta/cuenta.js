@@ -12,6 +12,10 @@ const RENGLON_NOMBRES = {
   loteka: 'Loteka',
 };
 
+// Preferencias de "lotería favorita": renglones + «Todas» (solo preferencia de
+// seguimiento/mensajes; el acceso del miembro activo es a todos los renglones).
+const FAVORITO_NOMBRES = { todas: 'Todas las loterías', ...RENGLON_NOMBRES };
+
 const ESTADO_TEXTO = {
   sin_pago: 'Sin pago todavía',
   pendiente_voucher: 'Voucher en revisión',
