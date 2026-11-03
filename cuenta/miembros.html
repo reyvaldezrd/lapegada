@@ -103,17 +103,18 @@ async function cargar() {
     let alguna = false;
     for (const [key, nombre] of Object.entries(RENGLON_NOMBRES)) {
       const j = (d.jugadas || {})[key];
-      const dj = DIARIAS[key] || [];
-      const diariaHTML = dj.length ? `<h3 style="color:#d4af37;margin:14px 0 4px">☀️ Jugada del Día</h3>` + dj.map(x => `
-          <p class="mini" style="margin:6px 0 2px"><strong>${x.loteria}</strong></p>
-          <div class="numeros">${x.numeros.map(n => `<span>${n}</span>`).join('')}</div>
-          ${x.pales ? `<p class="mini">Palés: ${x.pales} · Tripletas: ${x.tripletas}</p>` : ''}`).join('') : '';
+      const dj = DIARIAS[key];
+      const extrasD = dj ? [dj.pales ? `Palés: ${dj.pales}` : '', dj.tripletas ? `Tripletas: ${dj.tripletas}` : '', dj.superpale ? `Súper palé: ${dj.superpale}` : ''].filter(Boolean).join(' · ') : '';
+      const diariaHTML = (dj && dj.numeros && dj.numeros.length) ? `<h3 style="color:#d4af37;margin:14px 0 4px">☀️ Jugada del Día</h3>
+          <div class="numeros">${dj.numeros.map(n => `<span>${n}</span>`).join('')}</div>
+          ${extrasD ? `<p class="mini">${extrasD}</p>` : ''}` : '';
       const card2 = document.createElement('div');
       card2.className = 'card verde';
       if (j) {
         alguna = true;
         card2.innerHTML = `<h3 style="color:#d4af37;margin:0 0 4px">${nombre}</h3>
           ${j.ventana ? `<p class="mini" style="margin:2px 0">Ventana: ${j.ventana}${j.dia ? ' · ' + j.dia : ''}</p>` : ''}
+          <h3 style="color:#d4af37;margin:8px 0 4px">🔒 Jugada Secreta</h3>
           <div class="numeros">${j.numeros.map(n => `<span>${n}</span>`).join('')}</div>
           ${j.nota ? `<p class="mini">${j.nota}</p>` : ''}` + diariaHTML;
       } else {
