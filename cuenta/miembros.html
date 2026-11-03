@@ -133,23 +133,27 @@ async function cargar() {
     }
   }
 
-  // Sección de pago (siempre visible: activar, renovar o extender)
-  const cont = document.getElementById('planes-tarjeta');
-  cont.innerHTML = '';
-  const selDep = document.getElementById('plan-deposito');
-  selDep.innerHTML = '';
-  for (const [key, plan] of Object.entries(PLANES)) {
-    if (plan.unaVez && me.fundadorUsado && me.estado !== 'activo') { /* fundador ya usado: no ofrecer */ }
-    else cont.appendChild(planRow(key, plan, 'tarjeta'));
-    const o = document.createElement('option'); o.value = key; o.textContent = `${plan.nombre} — ${precioTexto(plan)}`;
-    selDep.appendChild(o);
-  }
-  document.getElementById('bloque-pago').style.display = 'block';
+  // Sección de pago: SOLO para quien aún no ha pagado (sin_pago) o ya venció.
+  // El que ya pagó (activo, o con su voucher en revisión) ve su ventana limpia
+  // durante todo el tiempo que pagó — nada de cobros a la vista. (Rey, 3-nov-2026)
+  if (me.estado === 'sin_pago' || me.estado === 'vencido') {
+    const cont = document.getElementById('planes-tarjeta');
+    cont.innerHTML = '';
+    const selDep = document.getElementById('plan-deposito');
+    selDep.innerHTML = '';
+    for (const [key, plan] of Object.entries(PLANES)) {
+      if (plan.unaVez && me.fundadorUsado && me.estado !== 'activo') { /* fundador ya usado: no ofrecer */ }
+      else cont.appendChild(planRow(key, plan, 'tarjeta'));
+      const o = document.createElement('option'); o.value = key; o.textContent = `${plan.nombre} — ${precioTexto(plan)}`;
+      selDep.appendChild(o);
+    }
+    document.getElementById('bloque-pago').style.display = 'block';
 
-  try {
-    const c = await api('/pagos/cuentas');
-    document.getElementById('cuentas').textContent = c.cuentas || c.nota;
-  } catch (e) { document.getElementById('cuentas').textContent = 'No se pudieron cargar las cuentas.'; }
+    try {
+      const c = await api('/pagos/cuentas');
+      document.getElementById('cuentas').textContent = c.cuentas || c.nota;
+    } catch (e) { document.getElementById('cuentas').textContent = 'No se pudieron cargar las cuentas.'; }
+  }
 }
 
 document.getElementById('btn-deposito').addEventListener('click', async () => {
