@@ -62,6 +62,10 @@
   a.entrar { display:inline-block; background:#f5c445; color:#0b1e3a; font-weight:bold; text-decoration:none; border-radius:30px; padding:13px 28px; font-size:17px; margin-top:12px; }
   .cta { text-align:center; margin-top:8px; }
   .cta .nota { display:block; margin-top:6px; font-size:13px; color:#8fa3bf; }
+  .diaria-card { background:#0b1c33; border:1px solid #274a73; border-radius:14px; padding:16px 18px; margin:0 auto 12px; max-width:640px; text-align:center; }
+  .diaria-card h3 { color:#d4af37; font-family: Georgia, 'Times New Roman', serif; font-size:19px; margin-bottom:10px; }
+  .diaria-card .bolas span { display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:52px; padding:0 7px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffe97a, #f5c445 55%, #c9930a); color:#231a00; font-weight:bold; font-size:19px; margin:3px; box-shadow:0 2px 6px rgba(0,0,0,.45); }
+  .diaria-card p { font-size:14px; color:#c9d4e6; margin-top:8px; }
   footer { margin-top:44px; text-align:center; font-size:13.5px; color:#8fa3bf; }
   footer .legal { max-width:640px; margin:0 auto 14px; line-height:1.5; }
 </style>
@@ -80,6 +84,13 @@
     <div class="cta"><a class="grupo" href="#" id="btnInstalar">📱 Instala la app en tu celular</a><span class="nota" id="instalarNota" style="display:none"></span></div>
     <div class="cta"><a class="grupo" href="https://chat.whatsapp.com/J2mZle35gY3IlnTpNq9Ofj?s=cl&p=i&mlu=4&ilr=4&iam=2">📲 Solo quiero entrar al grupo de WhatsApp</a></div>
   </header>
+
+  <section id="jugada-del-dia">
+    <h2>☀️ La Jugada del Día — ¡GRATIS!</h2>
+    <p class="nota" style="margin-top:0">La jugada de hoy para cada renglón, gratis para todo el mundo durante el lanzamiento — lo extendimos un mes más, hasta mediados de diciembre, para seguir llamando la atención. La 🔒 Jugada Secreta es solo para miembros.</p>
+    <div id="diariasPublicas"></div>
+    <p class="nota">Esto es La Pegada: la jugada del día, pensada pa' ganar. ¡Juega con inteligencia!</p>
+  </section>
 
   <section>
     <h2>¿Qué incluye la membresía?</h2>
@@ -203,6 +214,26 @@ document.getElementById('btnInstalar').addEventListener('click', function (ev) {
     : 'En Android: toca el menú ⋮ de arriba a la derecha y luego «Instalar app» (o «Agregar a pantalla principal»). Si no sale, ya la tienes instalada.';
   nota.style.display = 'block';
 });
+</script>
+<script>
+// Jugada del Día PÚBLICA (gratis): lee /diaria.json (un objeto por renglón,
+// el mismo archivo que alimenta la página de miembros) y pinta las tarjetas.
+(async () => {
+  const NOMBRES = { gana_mas_nacional: 'Gana Más + Nacional', leidsa_real: 'Leidsa + Real', nuevayork: 'Nueva York Tarde y Noche', florida: 'Florida Tarde y Noche', loteka: 'Loteka' };
+  try {
+    const d = await (await fetch('/diaria.json', { cache: 'no-store' })).json();
+    const caja = document.getElementById('diariasPublicas');
+    for (const [k, nombre] of Object.entries(NOMBRES)) {
+      const j = d[k];
+      if (!j || !j.numeros || !j.numeros.length) continue;
+      const extras = [j.pales ? 'Palés: ' + j.pales : '', j.tripletas ? 'Tripletas: ' + j.tripletas : '', j.superpale ? 'Súper palé: ' + j.superpale : ''].filter(Boolean).join(' · ');
+      const div = document.createElement('div');
+      div.className = 'diaria-card';
+      div.innerHTML = '<h3>' + nombre + '</h3><div class="bolas">' + j.numeros.map(n => '<span>' + n + '</span>').join('') + '</div>' + (extras ? '<p>' + extras + '</p>' : '');
+      caja.appendChild(div);
+    }
+  } catch (e) { /* si el archivo no carga, la sección queda solo con el título */ }
+})();
 </script>
 </body>
 </html>
