@@ -74,6 +74,16 @@
 let PLANES = {};
 const err = document.getElementById('error');
 
+// La Jugada del Día dentro del área de miembros queda detrás de un botón:
+// el miembro le da clic y se le despliega (orden de Rey, 5-nov-2026).
+function verDiaria(btn) {
+  const caja = btn.nextElementSibling;
+  if (!caja) return;
+  const abierta = caja.style.display !== 'none';
+  caja.style.display = abierta ? 'none' : 'block';
+  btn.textContent = abierta ? '☀️ Ver la Jugada del Día' : '☀️ Ocultar la Jugada del Día';
+}
+
 function planRow(key, plan, modo) {
   const div = document.createElement('div');
   div.className = 'plan';
@@ -135,9 +145,12 @@ async function cargar() {
       const j = (d.jugadas || {})[key];
       const dj = DIARIAS[key];
       const extrasD = dj ? [dj.pales ? `Palés: ${dj.pales}` : '', dj.tripletas ? `Tripletas: ${dj.tripletas}` : '', dj.superpale ? `Súper palé: ${dj.superpale}` : ''].filter(Boolean).join(' · ') : '';
-      const diariaHTML = (dj && dj.numeros && dj.numeros.length) ? `<h3 style="color:#d4af37;margin:14px 0 4px">☀️ Jugada del Día</h3>
+      const diariaHTML = (dj && dj.numeros && dj.numeros.length) ? `<button type="button" class="btn-block" style="margin-top:14px" onclick="verDiaria(this)">☀️ Ver la Jugada del Día</button>
+          <div style="display:none">
+          <h3 style="color:#d4af37;margin:14px 0 4px">☀️ Jugada del Día</h3>
           <div class="numeros">${dj.numeros.map(n => `<span>${n}</span>`).join('')}</div>
-          ${extrasD ? `<p class="mini">${extrasD}</p>` : ''}` : '';
+          ${extrasD ? `<p class="mini">${extrasD}</p>` : ''}
+          </div>` : '';
       const card2 = document.createElement('div');
       card2.className = 'card verde';
       if (j) {
