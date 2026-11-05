@@ -2,7 +2,7 @@
    Estrategia: el HTML va NETWORK-FIRST (los precios nunca quedan
    atrapados en una caché vieja); los assets estáticos del shell
    (logo, iconos, manifest) van cache-first. */
-const CACHE = 'lapegada-shell-v5';
+const CACHE = 'lapegada-shell-v6';
 const SHELL = [
   '/',
   '/index.html',
@@ -43,7 +43,7 @@ self.addEventListener('fetch', (event) => {
     // la caché solo sirve de respaldo sin conexión. NUNCA cache-first:
     // un visitante vería la jugada de ayer.
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'no-store' })
         .then((res) => {
           const copy = res.clone();
           caches.open(CACHE).then((cache) => cache.put(req, copy));
@@ -54,9 +54,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   if (isHTML) {
-    // Network-first: contenido de ventas siempre fresco; caché solo de respaldo sin conexión
+    // Network-first SIN caché HTTP (no-store): GitHub Pages manda max-age=600
+    // y los miembros veían la versión vieja de su cuenta tras cada cambio
+    // (pasó el 5-nov-2026 con el botón de la Jugada del Día). La caché del
+    // shell solo sirve de respaldo sin conexión.
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'no-store' })
         .then((res) => {
           const copy = res.clone();
           caches.open(CACHE).then((cache) => cache.put('/index.html', copy));
