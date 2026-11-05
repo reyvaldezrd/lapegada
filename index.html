@@ -66,6 +66,8 @@
   .diaria-card h3 { color:#d4af37; font-family: Georgia, 'Times New Roman', serif; font-size:19px; margin-bottom:10px; }
   .diaria-card .bolas span { display:inline-flex; align-items:center; justify-content:center; min-width:52px; height:52px; padding:0 7px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffe97a, #f5c445 55%, #c9930a); color:#231a00; font-weight:bold; font-size:19px; margin:3px; box-shadow:0 2px 6px rgba(0,0,0,.45); }
   .diaria-card p { font-size:14px; color:#c9d4e6; margin-top:8px; }
+  .pegada-card { background:#10253f; border:2px solid #d4af37; }
+  .pegada-card .cuando { font-size:13.5px; color:#cbbd8a; text-transform:capitalize; margin:0 0 10px; }
   footer { margin-top:44px; text-align:center; font-size:13.5px; color:#8fa3bf; }
   footer .legal { max-width:640px; margin:0 auto 14px; line-height:1.5; }
 </style>
@@ -84,6 +86,12 @@
     <div class="cta"><a class="grupo" href="#" id="btnInstalar">📱 Instala la app en tu celular</a><span class="nota" id="instalarNota" style="display:none"></span></div>
     <div class="cta"><a class="grupo" href="https://chat.whatsapp.com/J2mZle35gY3IlnTpNq9Ofj?s=cl&p=i&mlu=4&ilr=4&iam=2">📲 Solo quiero entrar al grupo de WhatsApp</a></div>
   </header>
+
+  <section id="ultimas-pegadas" style="display:none">
+    <h2>🏆 Nuestras últimas pegadas</h2>
+    <div id="pegadasRecientes"></div>
+    <p class="nota">Esta vitrina se actualiza con cada sorteo en el que pegamos. La 🔒 Jugada Secreta es solo para miembros — <a href="/cuenta/registro.html" style="color:#d4af37;font-weight:bold">crea tu perfil</a> y mírala completa cada día.</p>
+  </section>
 
   <section id="jugada-del-dia">
     <h2>☀️ La Jugada del Día — ¡GRATIS!</h2>
@@ -233,6 +241,33 @@ document.getElementById('btnInstalar').addEventListener('click', function (ev) {
       caja.appendChild(div);
     }
   } catch (e) { /* si el archivo no carga, la sección queda solo con el título */ }
+})();
+</script>
+<script>
+// Últimas pegadas (vitrina pública): lee /pegadas.json — los últimos 3 SORTEOS
+// en los que La Pegada pegó (del día en curso o de días anteriores) — y pinta
+// una tarjeta por sorteo. De la Jugada Secreta solo se muestra el número que
+// pegó, jamás la lista completa. (Orden de Rey, 5-nov-2026)
+(async () => {
+  try {
+    const d = await (await fetch('/pegadas.json', { cache: 'no-store' })).json();
+    const lista = (d.pegadas || []).slice(0, 3);
+    if (!lista.length) return;
+    const caja = document.getElementById('pegadasRecientes');
+    const hoyRD = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Santo_Domingo' });
+    const ayerRD = new Date(Date.now() - 864e5).toLocaleDateString('en-CA', { timeZone: 'America/Santo_Domingo' });
+    for (const p of lista) {
+      let cuando = new Date(p.fecha + 'T12:00:00Z').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+      if (p.fecha === hoyRD) cuando = '🔥 Hoy · ' + cuando;
+      else if (p.fecha === ayerRD) cuando = 'Ayer · ' + cuando;
+      const lineas = (p.aciertos || []).map(a => '<div class="bolas"><span>' + a.n + '</span></div><p>¡Pegó en <strong>' + a.pos + '</strong>! · ' + (a.origen === 'secreta' ? '🔒 Jugada Secreta' : '☀️ Jugada del Día') + '</p>').join('');
+      const div = document.createElement('div');
+      div.className = 'diaria-card pegada-card';
+      div.innerHTML = '<h3>🎉 ' + p.loteria + '</h3><p class="cuando">' + cuando + '</p>' + lineas;
+      caja.appendChild(div);
+    }
+    document.getElementById('ultimas-pegadas').style.display = 'block';
+  } catch (e) { /* sin datos, la sección no se muestra */ }
 })();
 </script>
 </body>
