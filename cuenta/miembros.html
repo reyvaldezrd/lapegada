@@ -21,6 +21,22 @@
     <p class="centro mini" id="detalle-favorita"></p>
   </div>
 
+  <!-- Referidos: link personal del miembro (visible siempre que haya sesión) -->
+  <div class="card" id="card-referidos" style="display:none">
+    <h3 style="color:#d4af37;margin-top:0">🎁 Invita y gana días gratis</h3>
+    <p class="mini" style="color:#eef3fb">Comparte tu link personal. Cuando un amigo se registre con tu link y active su plan, <strong>TÚ ganas días gratis</strong>:</p>
+    <p class="mini" style="color:#eef3fb">
+      ✅ Plan Semanal (RD$200) o Fundador (RD$300) → <strong>2 semanas gratis</strong><br>
+      ✅ Plan Mensual (RD$500) → <strong>3 semanas gratis</strong><br>
+      ✅ Plan Anual (RD$4,000) → <strong>3 meses gratis</strong>
+    </p>
+    <label for="ref-link">Tu link personal</label>
+    <input id="ref-link" type="text" readonly value="">
+    <button id="btn-copiar-ref" class="btn-block">📋 Copiar mi link</button>
+    <p class="centro" style="margin:10px 0 0"><a id="btn-wa-ref" class="btn-ayuda" href="#" target="_blank" rel="noopener" style="display:inline-block;background:#1faa55;color:#fff;font-weight:bold;text-decoration:none;border-radius:30px;padding:10px 22px;font-size:15px">📲 Compartir por WhatsApp</a></p>
+    <p class="centro mini" id="ref-stats" style="margin-top:10px"></p>
+  </div>
+
   <!-- Jugada Secreta: TODOS los renglones (solo miembros activos) -->
   <div id="bloque-jugadas" style="display:none">
     <h2>🔒 Jugada Secreta — todos los renglones</h2>
@@ -95,6 +111,19 @@ async function cargar() {
   document.getElementById('detalle-favorita').textContent =
     'Tu lotería favorita: ' + (FAVORITO_NOMBRES[me.renglon] || me.renglon) + ' (tu membresía incluye TODOS los renglones)';
 
+  // Referidos: mostrar la tarjeta con el link personal y las estadísticas.
+  if (me.refLink) {
+    document.getElementById('card-referidos').style.display = 'block';
+    const inp = document.getElementById('ref-link');
+    inp.value = me.refLink;
+    document.getElementById('btn-wa-ref').href = 'https://wa.me/?text=' + encodeURIComponent('🎯 Entra a La Pegada con mi link, crea tu perfil y mira la Jugada Secreta de tu lotería favorita: ' + me.refLink);
+    try {
+      const st = await api('/auth/mis-referidos');
+      document.getElementById('ref-stats').textContent =
+        `Con tu link se han registrado ${st.registrados} persona(s) · ${st.premiados} ya te generaron premio · llevas ${st.diasGanados} días gratis ganados 🎉`;
+    } catch (e) { /* sin estadísticas no se bloquea la página */ }
+  }
+
   if (me.estado === 'activo') {
     const d = await api('/mi-jugada');
     let DIARIAS = {};
@@ -157,6 +186,15 @@ async function cargar() {
     } catch (e) { document.getElementById('cuentas').textContent = 'No se pudieron cargar las cuentas.'; }
   }
 }
+
+document.getElementById('btn-copiar-ref').addEventListener('click', async () => {
+  const inp = document.getElementById('ref-link');
+  const btn = document.getElementById('btn-copiar-ref');
+  try { await navigator.clipboard.writeText(inp.value); }
+  catch (e) { inp.select(); document.execCommand('copy'); }
+  btn.textContent = '✅ ¡Link copiado!';
+  setTimeout(() => { btn.textContent = '📋 Copiar mi link'; }, 2500);
+});
 
 document.getElementById('btn-deposito').addEventListener('click', async () => {
   const okD = document.getElementById('ok-deposito'); const errD = document.getElementById('error-deposito');
