@@ -12,6 +12,10 @@
   <p class="tagline">Crea tu perfil de miembro en un minuto.</p>
   <div class="linea"></div>
 
+  <div class="card" id="aviso-invitado" style="display:none;border:1px solid #d4af37">
+    <p class="centro" style="margin:4px 0">🎁 <strong>Te invitó un miembro de La Pegada.</strong><br>Crea tu perfil y activa tu plan: tu invitado gana días gratis y tú entras a la familia. ¡Bienvenido!</p>
+  </div>
+
   <div class="card">
     <form id="form-registro">
       <label for="nombre">Nombre completo *</label>
@@ -38,6 +42,10 @@ const sel = document.getElementById('renglon');
 for (const [key, nombre] of Object.entries(FAVORITO_NOMBRES)) {
   const o = document.createElement('option'); o.value = key; o.textContent = nombre; sel.appendChild(o);
 }
+// Referido: si llegó con el link de un miembro (?ref=uX), se manda en el
+// registro y se le muestra el aviso de invitado.
+const REF = new URLSearchParams(location.search).get('ref') || '';
+if (REF) document.getElementById('aviso-invitado').style.display = 'block';
 document.getElementById('form-registro').addEventListener('submit', async (e) => {
   e.preventDefault();
   const err = document.getElementById('error'); err.style.display = 'none';
@@ -50,6 +58,7 @@ document.getElementById('form-registro').addEventListener('submit', async (e) =>
         correo: document.getElementById('correo').value,
         password: document.getElementById('password').value,
         renglon: sel.value,
+        ref: REF || undefined,
       }),
     });
     guardarToken(data.token);
