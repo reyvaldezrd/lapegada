@@ -1,1 +1,38 @@
-{"actualizado": "2026-11-10", "pegadas": [{"loteria": "New York Tarde", "fecha": "2026-11-10", "aciertos": [{"n": "10", "pos": "1ra", "origen": "diaria"}]}, {"loteria": "Gana Más", "fecha": "2026-11-10", "aciertos": [{"n": "91", "pos": "2da", "origen": "secreta"}]}, {"loteria": "Gana Más", "fecha": "2026-11-09", "aciertos": [{"n": "73", "pos": "2da", "origen": "secreta"}]}]}
+{
+ "actualizado": "2026-11-12",
+ "pegadas": [
+  {
+   "loteria": "Gana Más",
+   "fecha": "2026-11-12",
+   "aciertos": [
+    {
+     "n": "73",
+     "pos": "2da",
+     "origen": "diaria"
+    }
+   ]
+  },
+  {
+   "loteria": "New York Tarde",
+   "fecha": "2026-11-10",
+   "aciertos": [
+    {
+     "n": "10",
+     "pos": "1ra",
+     "origen": "diaria"
+    }
+   ]
+  },
+  {
+   "loteria": "Gana Más",
+   "fecha": "2026-11-10",
+   "aciertos": [
+    {
+     "n": "91",
+     "pos": "2da",
+     "origen": "secreta"
+    }
+   ]
+  }
+ ]
+}
