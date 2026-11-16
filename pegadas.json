@@ -2,6 +2,22 @@
  "actualizado": "2026-11-15",
  "pegadas": [
   {
+   "loteria": "Nacional Noche",
+   "fecha": "2026-11-15",
+   "aciertos": [
+    {
+     "n": "03",
+     "pos": "1ra",
+     "origen": "diaria"
+    },
+    {
+     "n": "30",
+     "pos": "2da",
+     "origen": "diaria"
+    }
+   ]
+  },
+  {
    "loteria": "Gana Más",
    "fecha": "2026-11-15",
    "aciertos": [
