@@ -1,6 +1,28 @@
 {
- "actualizado": "2026-11-16",
+ "actualizado": "2026-11-20",
  "pegadas": [
+  {
+   "loteria": "New York Tarde",
+   "fecha": "2026-11-20",
+   "aciertos": [
+    {
+     "n": "16",
+     "pos": "1ra",
+     "origen": "diaria"
+    }
+   ]
+  },
+  {
+   "loteria": "Gana Más",
+   "fecha": "2026-11-20",
+   "aciertos": [
+    {
+     "n": "08",
+     "pos": "2da",
+     "origen": "diaria"
+    }
+   ]
+  },
   {
    "loteria": "New York Tarde",
    "fecha": "2026-11-16",
@@ -9,28 +31,6 @@
      "n": "40",
      "pos": "2da",
      "origen": "diaria"
-    }
-   ]
-  },
-  {
-   "loteria": "Florida Tarde",
-   "fecha": "2026-11-16",
-   "aciertos": [
-    {
-     "n": "90",
-     "pos": "1ra",
-     "origen": "diaria"
-    }
-   ]
-  },
-  {
-   "loteria": "Quiniela Real",
-   "fecha": "2026-11-16",
-   "aciertos": [
-    {
-     "n": "42",
-     "pos": "1ra",
-     "origen": "secreta"
     }
    ]
   }
