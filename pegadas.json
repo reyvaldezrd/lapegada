@@ -1,6 +1,38 @@
 {
- "actualizado": "2026-11-20",
+ "actualizado": "2026-11-21",
  "pegadas": [
+  {
+   "loteria": "Gana Más",
+   "fecha": "2026-11-21",
+   "aciertos": [
+    {
+     "n": "56",
+     "pos": "2da",
+     "origen": "secreta"
+    },
+    {
+     "n": "55",
+     "pos": "3ra",
+     "origen": "secreta"
+    }
+   ]
+  },
+  {
+   "loteria": "Florida Tarde",
+   "fecha": "2026-11-21",
+   "aciertos": [
+    {
+     "n": "83",
+     "pos": "1ra",
+     "origen": "secreta"
+    },
+    {
+     "n": "83",
+     "pos": "1ra",
+     "origen": "diaria"
+    }
+   ]
+  },
   {
    "loteria": "New York Tarde",
    "fecha": "2026-11-20",
@@ -8,28 +40,6 @@
     {
      "n": "16",
      "pos": "1ra",
-     "origen": "diaria"
-    }
-   ]
-  },
-  {
-   "loteria": "Gana Más",
-   "fecha": "2026-11-20",
-   "aciertos": [
-    {
-     "n": "08",
-     "pos": "2da",
-     "origen": "diaria"
-    }
-   ]
-  },
-  {
-   "loteria": "New York Tarde",
-   "fecha": "2026-11-16",
-   "aciertos": [
-    {
-     "n": "40",
-     "pos": "2da",
      "origen": "diaria"
     }
    ]
