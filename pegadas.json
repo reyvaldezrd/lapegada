@@ -1,6 +1,17 @@
 {
- "actualizado": "2026-11-21",
+ "actualizado": "2026-11-22",
  "pegadas": [
+  {
+   "loteria": "New York Tarde",
+   "fecha": "2026-11-22",
+   "aciertos": [
+    {
+     "n": "24",
+     "pos": "1ra",
+     "origen": "secreta"
+    }
+   ]
+  },
   {
    "loteria": "Gana Más",
    "fecha": "2026-11-21",
@@ -28,17 +39,6 @@
     },
     {
      "n": "83",
-     "pos": "1ra",
-     "origen": "diaria"
-    }
-   ]
-  },
-  {
-   "loteria": "New York Tarde",
-   "fecha": "2026-11-20",
-   "aciertos": [
-    {
-     "n": "16",
      "pos": "1ra",
      "origen": "diaria"
     }
