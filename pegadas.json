@@ -1,6 +1,17 @@
 {
- "actualizado": "2026-11-26",
+ "actualizado": "2026-11-27",
  "pegadas": [
+  {
+   "loteria": "Florida Tarde",
+   "fecha": "2026-11-27",
+   "aciertos": [
+    {
+     "n": "95",
+     "pos": "2da",
+     "origen": "secreta"
+    }
+   ]
+  },
   {
    "loteria": "Florida Tarde",
    "fecha": "2026-11-26",
@@ -20,17 +31,6 @@
      "n": "08",
      "pos": "2da",
      "origen": "diaria"
-    }
-   ]
-  },
-  {
-   "loteria": "New York Tarde",
-   "fecha": "2026-11-22",
-   "aciertos": [
-    {
-     "n": "24",
-     "pos": "1ra",
-     "origen": "secreta"
     }
    ]
   }
